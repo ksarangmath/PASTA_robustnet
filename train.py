@@ -160,6 +160,14 @@ parser.add_argument('--use_wtloss', action='store_true', default=False,
 parser.add_argument('--use_isw', action='store_true', default=False,
                     help='Automatic setting from wt_layer')
 
+parser.add_argument('--use_pasta', action='store_true', default=False,
+                    help='Use PASTA augmentation')
+parser.add_argument('--pasta_mode', type=str, default='prop')
+parser.add_argument('--pasta_alpha', type=float, default=3.0)
+parser.add_argument('--pasta_k', type=float, default=2.0)
+parser.add_argument('--pasta_beta', type=float, default=0.25)
+
+
 args = parser.parse_args()
 
 # Enable CUDNN Benchmarking optimization

@@ -312,7 +312,7 @@ class GTAVUniform(data.Dataset):
                  transform=None, target_transform=None, target_aux_transform=None, dump_images=False,
                  cv_split=None, class_uniform_pct=0.5, class_uniform_tile=1024,
                  test=False, coarse_boost_classes=None, is_additional=False, image_in=False,
-                 extract_feature=False):
+                 extract_feature=False, pasta=None):
         self.mode = mode
         self.maxSkip = maxSkip
         self.joint_transform_list = joint_transform_list
@@ -327,6 +327,7 @@ class GTAVUniform(data.Dataset):
         self.is_additional = is_additional
         self.image_in = image_in
         self.extract_feature = extract_feature
+        self.pasta = pasta
 
 
         if cv_split:
@@ -414,7 +415,8 @@ class GTAVUniform(data.Dataset):
             img_path, mask_path, centroid, class_id = elem
         else:
             img_path, mask_path = elem
-        img, mask = Image.open(img_path).convert('RGB'), m.imread(mask_path)
+        img, mask = (Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB"))
+        mask = np.asarray(mask)
         img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         # print(img.size, mask[:,:,0].shape)
@@ -427,7 +429,8 @@ class GTAVUniform(data.Dataset):
             else:
                 index += 1
             img_path, mask_path = self.imgs[index]
-            img, mask = Image.open(img_path).convert('RGB'), m.imread(mask_path)
+            img, mask = (Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB"))
+            mask = np.asarray(mask)
             img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         image_size = mask[:,:,0].shape
@@ -448,7 +451,13 @@ class GTAVUniform(data.Dataset):
         #     mask_copy[mask == k] = v
         # mask = Image.fromarray(mask_copy.astype(np.uint8))
 
+
+
         # Image Transformations
+
+        if self.pasta:
+            img = self.pasta(img)
+
         if self.extract_feature is not True:
             if self.joint_transform_list is not None:
                 for idx, xform in enumerate(self.joint_transform_list):

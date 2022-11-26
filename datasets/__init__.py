@@ -13,6 +13,8 @@ from datasets import nullloader
 from datasets import multi_loader
 from datasets.sampler import DistributedSampler
 
+from datasets.pasta import PASTA
+
 import torchvision.transforms as standard_transforms
 
 import transforms.joint_transforms as joint_transforms
@@ -71,6 +73,7 @@ def get_input_transforms(args, dataset):
     # Image appearance transformations
     train_input_transform = []
     val_input_transform = []
+    
     if args.color_aug > 0.0:
         train_input_transform += [standard_transforms.RandomApply([
             standard_transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.5)]
@@ -292,6 +295,10 @@ def setup_loaders(args):
     if args.test_mode:
         args.num_workers = 1
 
+    args.pasta = None
+    if args.use_pasta:
+        args.pasta = PASTA(args.pasta_mode, args.pasta_alpha, args.pasta_k, args.pasta_beta)
+
     train_sets = []
     val_sets = []
     val_dataset_names = []
@@ -416,7 +423,8 @@ def setup_loaders(args):
                 class_uniform_tile=args.class_uniform_tile,
                 test=args.test_mode,
                 coarse_boost_classes=coarse_boost_classes,
-                image_in=args.image_in)
+                image_in=args.image_in,
+                pasta=args.pasta)
         else:
             train_set = gtav.GTAV(
                 gtav_mode, 0,

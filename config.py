@@ -1,7 +1,6 @@
 """
 # Code adapted from:
 # https://github.com/facebookresearch/Detectron/blob/master/detectron/core/config.py
-
 Source License
 # Copyright (c) 2017-present, Facebook, Inc.
 #
@@ -27,7 +26,7 @@ Source License
 # --------------------------------------------------------
 """
 ##############################################################################
-#Config
+# Config
 ##############################################################################
 
 
@@ -64,33 +63,42 @@ __C.REDUCE_BORDER_EPOCH = -1
 __C.STRICTBORDERCLASS = None
 
 
-
-#Attribute Dictionary for Dataset
+# Attribute Dictionary for Dataset
 __C.DATASET = AttrDict()
-#Cityscapes Dir Location
-__C.DATASET.CITYSCAPES_DIR = '/data/davian/segmentation/cityscapes'
-#SDC Augmented Cityscapes Dir Location
-__C.DATASET.CITYSCAPES_AUG_DIR = ''
-#Mapillary Dataset Dir Location
-__C.DATASET.MAPILLARY_DIR = '/data/davian/segmentation/mapillary'
-#GTAV, BDD100K Dataset Dir Location
-__C.DATASET.GTAV_DIR = '/data/davian/segmentation/gtav'
-__C.DATASET.BDD_DIR = '/data/davian/segmentation/bdd100k/bdd100k/seg'
-#Synthia Dataset Dir Location
-__C.DATASET.SYNTHIA_DIR = '/data/davian/segmentation/synthia'
-#Kitti Dataset Dir Location
-__C.DATASET.KITTI_DIR = ''
-#SDC Augmented Kitti Dataset Dir Location
-__C.DATASET.KITTI_AUG_DIR = ''
-#Camvid Dataset Dir Location
-__C.DATASET.CAMVID_DIR = '/home/nas_datasets/segmentation/SegNet-Tutorial/CamVid'
-#Number of splits to support
+# Cityscapes Dir Location
+# __C.DATASET.CITYSCAPES_DIR = '/data/davian/segmentation/cityscapes'
+__C.DATASET.CITYSCAPES_DIR = (
+    "/srv/datasets/cityscapes_DG"  # Custom CityScapes directory
+)
+# SDC Augmented Cityscapes Dir Location
+__C.DATASET.CITYSCAPES_AUG_DIR = ""
+# Mapillary Dataset Dir Location
+__C.DATASET.MAPILLARY_DIR = "/srv/datasets/mapillary"
+# GTAV, BDD100K Dataset Dir Location
+# __C.DATASET.GTAV_DIR = '/data/davian/segmentation/gtav'
+__C.DATASET.GTAV_DIR = "/srv/datasets/GTA5_DG/base_splits"  # Custom GTAV directory
+__C.DATASET.GTAV_All_DIR = (
+    "/srv/datasets/GTA5_DG/source_all_splits"  # Custom GTAV-All directory
+)
+__C.DATASET.BDD_DIR = (
+    "/srv/datasets/bdd100k_DG"  # Custom BDD100k Semantic Segmentation Directory
+)
+# Synthia Dataset Dir Location
+__C.DATASET.SYNTHIA_DIR = "/srv/datasets/SYNTHIA_DG"
+# Kitti Dataset Dir Location
+__C.DATASET.KITTI_DIR = ""
+# SDC Augmented Kitti Dataset Dir Location
+__C.DATASET.KITTI_AUG_DIR = ""
+# Camvid Dataset Dir Location
+__C.DATASET.CAMVID_DIR = "/home/nas_datasets/segmentation/SegNet-Tutorial/CamVid"
+# Number of splits to support
 __C.DATASET.CV_SPLITS = 3
 
 
 __C.MODEL = AttrDict()
-__C.MODEL.BN = 'pytorch-syncnorm'
+__C.MODEL.BN = "pytorch-syncnorm"
 __C.MODEL.BNFUNC = torch.nn.SyncBatchNorm
+
 
 def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
     """Call this function in your script after you have finished setting all cfg
@@ -101,13 +109,13 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
     that's harder to understand than is necessary).
     """
 
-    if hasattr(args, 'syncbn') and args.syncbn:
-        __C.MODEL.BN = 'pytorch-syncnorm'
+    if hasattr(args, "syncbn") and args.syncbn:
+        __C.MODEL.BN = "pytorch-syncnorm"
         __C.MODEL.BNFUNC = torch.nn.SyncBatchNorm
-        print('Using pytorch sync batch norm')
+        print("Using pytorch sync batch norm")
     else:
         __C.MODEL.BNFUNC = torch.nn.BatchNorm2d
-        print('Using regular batch norm')
+        print("Using regular batch norm")
 
     if not train_mode:
         cfg.immutable(True)
@@ -119,7 +127,7 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
         __C.BATCH_WEIGHTING = True
 
     if args.jointwtborder:
-        if args.strict_bdr_cls != '':
+        if args.strict_bdr_cls != "":
             __C.STRICTBORDERCLASS = [int(i) for i in args.strict_bdr_cls.split(",")]
         if args.rlx_off_iter > -1:
             __C.REDUCE_BORDER_ITER = args.rlx_off_iter
