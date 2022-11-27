@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-python -m torch.distributed.launch --nproc_per_node=4 train.py \
+python -m torch.distributed.launch --nproc_per_node=2 train.py \
    --dataset gtav \
    --covstat_val_dataset gtav \
-   --val_dataset bdd100k cityscapes synthia mapillary \
-   --arch network.deepv3.DeepR50V3PlusD \
+   --val_dataset cityscapes bdd100k mapillary synthia \
+   --arch network.deepv3.DeepMobileNetV3PlusD \
    --city_mode 'train' \
    --lr_schedule poly \
    --lr 0.01 \
@@ -16,19 +16,21 @@ python -m torch.distributed.launch --nproc_per_node=4 train.py \
    --scale_max 2.0 \
    --rrotate 0 \
    --max_iter 40000 \
-   --bs_mult 4 \
+   --bs_mult 8 \
    --gblur \
    --color_aug 0.5 \
    --wt_reg_weight 0.0 \
    --relax_denom 0.0 \
+   --clusters 0 \
    --cov_stat_epoch 0 \
-   --wt_layer 0 0 0 0 0 0 0 \
+   --trials 0 \
+   --wt_layer 0 0 4 4 4 0 0 \
    --use_pasta \
    --pasta_mode prop \
    --pasta_alpha 3.0 \
    --pasta_k 2.0 \
    --pasta_beta 0.25 \
    --date 0101 \
-   --exp r50os16_gtav_base_PASTA_3.0_2.0_0.25 \
+   --exp mobile_gtav_ibn_PASTA_3.0_2.0_0.25 \
    --ckpt ./logs/ \
    --tb_path ./logs/
