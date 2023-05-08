@@ -13,7 +13,6 @@ import torch
 import torchvision.transforms as transforms
 import datasets.uniform as uniform
 import datasets.cityscapes_labels as cityscapes_labels
-import scipy.misc as m
 
 from config import cfg
 
@@ -231,7 +230,8 @@ class GTAV(data.Dataset):
     def __getitem__(self, index):
 
         img_path, mask_path = self.imgs[index]
-        img, mask = Image.open(img_path).convert('RGB'), m.imread(mask_path)
+        img, mask = Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB")
+        mask = np.asarray(mask)
         img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         while (img.size[1], img.size[0]) != mask[:,:,0].shape:
@@ -243,7 +243,8 @@ class GTAV(data.Dataset):
             else:
                 index += 1
             img_path, mask_path = self.imgs[index]
-            img, mask = Image.open(img_path).convert('RGB'), m.imread(mask_path)
+            img, mask = Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB")
+            mask = np.asarray(mask)
             img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         image_size = mask[:,:,0].shape
@@ -415,7 +416,7 @@ class GTAVUniform(data.Dataset):
             img_path, mask_path, centroid, class_id = elem
         else:
             img_path, mask_path = elem
-        img, mask = (Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB"))
+        img, mask = Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB")
         mask = np.asarray(mask)
         img_name = os.path.splitext(os.path.basename(img_path))[0]
 
@@ -429,7 +430,7 @@ class GTAVUniform(data.Dataset):
             else:
                 index += 1
             img_path, mask_path = self.imgs[index]
-            img, mask = (Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB"))
+            img, mask = Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB")
             mask = np.asarray(mask)
             img_name = os.path.splitext(os.path.basename(img_path))[0]
 
@@ -563,7 +564,8 @@ class GTAVAug(data.Dataset):
     def __getitem__(self, index):
 
         img_path, mask_path = self.imgs[index]
-        img, mask = Image.open(img_path).convert('RGB'), m.imread(mask_path)
+        img, mask = Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB")
+        mask = np.asarray(mask)
         img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         while (img.size[1], img.size[0]) != mask[:,:,0].shape:
@@ -575,7 +577,8 @@ class GTAVAug(data.Dataset):
             else:
                 index += 1
             img_path, mask_path = self.imgs[index]
-            img, mask = Image.open(img_path).convert('RGB'), m.imread(mask_path)
+            img, mask = Image.open(img_path).convert("RGB"), Image.open(mask_path).convert("RGB")
+            mask = np.asarray(mask)
             img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         image_size = mask[:,:,0].shape

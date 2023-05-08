@@ -80,8 +80,6 @@ def class_centroids_image(item, tile_size, num_classes, id2trainid):
     pbar.update(1)
     return centroids
 
-import scipy.misc as m
-
 def class_centroids_image_from_color(item, tile_size, num_classes, id2trainid):
     """
     For one image, calculate centroids for all classes present in image.
@@ -93,7 +91,8 @@ def class_centroids_image_from_color(item, tile_size, num_classes, id2trainid):
     """
     image_fn, label_fn = item
     centroids = defaultdict(list)
-    mask = m.imread(label_fn)
+    mask = Image.open(label_fn).convert("RGB")
+    mask = np.asarray(mask)
     image_size = mask[:,:,0].shape
     tile_locations = calc_tile_locations(tile_size, image_size)
 
